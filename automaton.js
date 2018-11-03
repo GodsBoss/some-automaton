@@ -78,7 +78,35 @@ class Grid {
   setCell(pos, cell) {
     this.cells[this.fieldIndex(pos)] = cell
   }
+
+  neighbours(pos) {
+    return gridNeighbourOffsets.map(
+      (offset) => ({
+          x: (pos.x + offset.x + this.size.width) % this.size.width,
+          y: (pos.y + offset.y + this.size.height) % this.size.height,
+      }),
+    )
+  }
 }
+
+const gridNeighbourOffsets = [
+  {
+    x: 1,
+    y: 0
+  },
+  {
+    x: -1,
+    y: 0,
+  },
+  {
+    x: 0,
+    y: 1,
+  },
+  {
+    x: 0,
+    y: -1,
+  },
+]
 
 function createCell(x, y) {
   return {
@@ -164,10 +192,7 @@ class Fight {
 
   singleFight(grid) {
     const pos1 = randomPosition(grid)
-    const pos2 = randomPosition(grid)
-    if (pos1.x == pos2.x && pos1.y == pos2.y) {
-      return
-    }
+    const pos2 = randomArrayItem(grid.neighbours(pos1))
     const cell1 = grid.getCell(pos1)
     const cell2 = grid.getCell(pos2)
     let pos1Adv = 0
