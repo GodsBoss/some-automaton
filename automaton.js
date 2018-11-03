@@ -6,7 +6,7 @@ function init(e) {
   canvas.height = 600
   canvas.style.border = "1px solid black"
   const ctx2D = canvas.getContext('2d')
-  const imageDataObj = ctx2D.createImageData(800, 600)
+  const imageDataObj = ctx2D.createImageData(canvas.width, canvas.height)
   let grid = new Grid({width: 40, height: 30}, createCell)
   let mutation = new Mutation(1)
   const fight = new Fight(200)
