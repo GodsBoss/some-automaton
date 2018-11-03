@@ -8,10 +8,12 @@ function init(e) {
   const ctx2D = canvas.getContext('2d')
   const imageDataObj = ctx2D.createImageData(800, 600)
   let grid = new Grid({width: 40, height: 30}, createCell)
-  let mutation = new Mutation(100)
+  let mutation = new Mutation(1)
+  const fight = new Fight(200)
   tick(
     function() {
       mutation.mutate(grid)
+      fight.fight(grid)
       fillImageDataObjWithGrid(grid, imageDataObj)
       ctx2D.putImageData(imageDataObj, 0, 0)
     },
@@ -72,6 +74,10 @@ class Grid {
   getCell(pos) {
     return this.cells[this.fieldIndex(pos)]
   }
+
+  setCell(pos, cell) {
+    this.cells[this.fieldIndex(pos)] = cell
+  }
 }
 
 function createCell(x, y) {
@@ -115,9 +121,7 @@ class Mutation {
 
   mutate(grid) {
     for(let i=0; i<this.attempts; i++) {
-      const x = randomInt(0, grid.getSize().width)
-      const y = randomInt(0, grid.getSize().height)
-      const currentCell = grid.getCell({x, y})
+      const currentCell = grid.getCell(randomPosition(grid))
       const mutation = randomArrayItem(this.mutations)
       const newPower = currentCell.power.slice(0)
       newPower[mutation.up]++
@@ -145,4 +149,53 @@ function randomArrayItem(arr) {
 // randomFromTo returns a random integer i with min <= i < max.
 function randomInt(min, max) {
   return Math.floor(min + Math.random() * (max - min))
+}
+
+class Fight {
+  constructor(attempts) {
+    this.attempts = attempts
+  }
+
+  fight(grid) {
+    for(let i=0; i<this.attempts; i++) {
+      this.singleFight(grid)
+    }
+  }
+
+  singleFight(grid) {
+    const pos1 = randomPosition(grid)
+    const pos2 = randomPosition(grid)
+    if (pos1.x == pos2.x && pos1.y == pos2.y) {
+      return
+    }
+    const cell1 = grid.getCell(pos1)
+    const cell2 = grid.getCell(pos2)
+    let pos1Adv = 0
+    let pos2Adv = 0
+    for(let i=0; i < 3; i++) {
+      if (cell1.power[i] > cell2.power[i]) {
+        pos1Adv++
+      }
+      if (cell1.power[i] < cell2.power[i]) {
+        pos2Adv++
+      }
+    }
+    if (pos1Adv > pos2Adv) {
+      this.replace(grid, pos2, cell1)
+    }
+    if (pos1Adv < pos2Adv) {
+      this.replace(grid, pos1, cell2)
+    }
+  }
+
+  replace(grid, loserPos, winnerCell) {
+    grid.setCell(loserPos, { power: winnerCell.power.slice(0)})
+  }
+}
+
+function randomPosition(grid) {
+  return {
+    x: randomInt(0, grid.getSize().width),
+    y: randomInt(0, grid.getSize().height),
+  }
 }
