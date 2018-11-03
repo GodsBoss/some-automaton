@@ -17,7 +17,7 @@ function init(e) {
       fillImageDataObjWithGrid(grid, imageDataObj)
       ctx2D.putImageData(imageDataObj, 0, 0)
     },
-    100
+    25
   )
 }
 
