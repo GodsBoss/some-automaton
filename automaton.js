@@ -300,6 +300,9 @@ class Simulation {
   }
 
   stop() {
+    if (!this.running) {
+      return
+    }
     this.running = false
   }
 }
