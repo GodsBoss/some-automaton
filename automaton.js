@@ -7,14 +7,23 @@ function init(e) {
   canvas.style.border = "1px solid black"
   const ctx2D = canvas.getContext('2d')
   const imageDataObj = ctx2D.createImageData(canvas.width, canvas.height)
-  let grid = new Grid({width: 320, height: 160}, createRandomCell(4))
-  let mutation = new Mutation(1)
-  const fight = new Fight(10000)
+  const sim = new Simulation(
+    {
+      size: {width: 320, height: 160},
+      variance: 4,
+      mutation: {
+        attempts: 1,
+      },
+      fight: {
+        attempts: 10000,
+      },
+    },
+  )
+  sim.initialize()
   tick(
     function() {
-      mutation.mutate(grid)
-      fight.fight(grid)
-      fillImageDataObjWithGrid(grid, imageDataObj)
+      sim.next()
+      fillImageDataObjWithGrid(sim.getGrid(), imageDataObj)
       ctx2D.putImageData(imageDataObj, 0, 0)
     },
     25
@@ -241,5 +250,26 @@ function randomPosition(grid) {
   return {
     x: randomInt(0, grid.getSize().width),
     y: randomInt(0, grid.getSize().height),
+  }
+}
+
+class Simulation {
+  constructor(cfg) {
+    this.cfg = cfg
+  }
+
+  initialize() {
+    this.mutation = new Mutation(this.cfg.mutation ? this.cfg.mutation.attempts : 1)
+    this.fight = new Fight(this.cfg.fight ? this.cfg.fight.attempts : 0)
+    this.grid = new Grid(this.cfg.size, createRandomCell(this.cfg.variance))
+  }
+
+  getGrid() {
+    return this.grid
+  }
+
+  next() {
+    this.mutation.mutate(this.grid)
+    this.fight.fight(this.grid)
   }
 }
