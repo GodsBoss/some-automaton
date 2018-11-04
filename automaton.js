@@ -26,9 +26,9 @@ function init(e) {
     },
   )
   sim.initialize()
-  sim.start()
   const gui = new GUI(e.target, e.target.getElementById('settings'))
   gui.initialize(sim)
+  sim.start()
 }
 
 function fillImageDataObjWithGrid(grid, imageDataObj) {
@@ -251,6 +251,7 @@ class Simulation {
     this.cfg = cfg
     this.running = false
     this.gridChangeCallback = (grid) => {}
+    this.runningChangeCallback = (running) => {}
   }
 
   initialize() {
@@ -291,11 +292,16 @@ class Simulation {
     this.gridChangeCallback = callback
   }
 
+  setRunningChangeCallback(callback) {
+    this.runningChangeCallback = callback
+  }
+
   start() {
     if(this.running) {
       return
     }
     this.running = true
+    this.notifyRunningChangeCallback()
     this.next()
   }
 
@@ -304,6 +310,11 @@ class Simulation {
       return
     }
     this.running = false
+    this.notifyRunningChangeCallback()
+  }
+
+  notifyRunningChangeCallback() {
+    this.runningChangeCallback(this.running)
   }
 }
 
@@ -316,10 +327,33 @@ class GUI {
   initialize(sim) {
     const buttons = this.document.createElement('div')
     buttons.appendChild(this.newButton('Reset', ()=>{ sim.reset() }))
-    buttons.appendChild(this.newButton('Start', ()=>{ sim.start() }))
-    buttons.appendChild(this.newButton('Stop', ()=>{ sim.stop() }))
+    buttons.appendChild(this.newStartStopButton(sim))
     buttons.appendChild(this.newButton('Step', ()=>{ sim.step() }))
     this.parent.appendChild(buttons)
+  }
+
+  newStartStopButton(sim) {
+    const startCallback = ()=>{ sim.start() }
+    const stopCallback = ()=>{ sim.stop() }
+    var callback = startCallback
+    const button = this.newButton(
+      'Start',
+      () => {
+        callback()
+      },
+    )
+    sim.setRunningChangeCallback(
+      (running) => {
+        if(running) {
+          button.childNodes[0].data = 'Stop'
+          callback = stopCallback
+        } else {
+          button.childNodes[0].data = 'Start'
+          callback = startCallback
+        }
+      },
+    )
+    return button
   }
 
   newButton(label, callback){
