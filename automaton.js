@@ -264,8 +264,8 @@ class Simulation {
     return this.grid
   }
 
-  reset() {
-    this.grid = new Grid(this.cfg.size, createRandomCell(this.cfg.variance))
+  reset(variance) {
+    this.grid = new Grid(this.cfg.size, createRandomCell(variance))
     this.gridChangeCallback(this.getGrid())
   }
 
@@ -338,7 +338,23 @@ class GUI {
 
   addResetControls(sim) {
     const container = this.document.createElement('div')
-    container.appendChild(this.newButton('Reset', ()=>{ sim.reset() }))
+    const varianceList = this.document.createElement('select')
+    for(let variance = 0; variance < 5; variance++) {
+      let varianceItem = this.document.createElement('option')
+      varianceItem.appendChild(this.document.createTextNode(variance))
+      varianceItem.value = variance
+      varianceList.appendChild(varianceItem)
+    }
+    varianceList.childNodes[4].selected = true
+    container.appendChild(varianceList)
+    container.appendChild(
+      this.newButton(
+        'Reset',
+        ()=>{
+          sim.reset(+varianceList.value)
+        },
+      ),
+    )
     this.parent.appendChild(container)
   }
 
