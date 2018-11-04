@@ -315,6 +315,7 @@ class GUI {
     buttons.appendChild(this.newButton('Reset', ()=>{ sim.reset() }))
     buttons.appendChild(this.newButton('Start', ()=>{ sim.start() }))
     buttons.appendChild(this.newButton('Stop', ()=>{ sim.stop() }))
+    buttons.appendChild(this.newButton('Step', ()=>{ sim.step() }))
     this.parent.appendChild(buttons)
   }
 
