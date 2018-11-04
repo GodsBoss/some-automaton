@@ -336,6 +336,7 @@ class GUI {
   initialize(sim) {
     this.addRunningControls(sim)
     this.addResetControls(sim)
+    this.addColorInfo()
   }
 
   addRunningControls(sim) {
@@ -396,5 +397,34 @@ class GUI {
     button.appendChild(this.document.createTextNode(label))
     button.addEventListener('click', callback, false)
     return button
+  }
+
+  addColorInfo() {
+    const container = this.document.createElement('div')
+    const colorMeaningsQuestion = this.document.createElement('p')
+    colorMeaningsQuestion.appendChild(this.document.createTextNode('What do the colors mean?'))
+    container.appendChild(colorMeaningsQuestion)
+    const colorMeaningsTable = this.document.createElement('table')
+    colorMeaningsTable.className = "color-table"
+    const headerRow = colorMeaningsTable.insertRow()
+    headerRow.insertCell().appendChild(this.document.createTextNode('Power value'))
+    headerRow.insertCell().appendChild(this.document.createTextNode('Color'))
+
+    // ROFL!
+    for(let a = 1; a < 10; a++) {
+      for(let b = 1; b < 10; b++) {
+        for(let c = 1; c < 10; c++) {
+          if(a+b+c == 15) {
+            let currentRow = colorMeaningsTable.insertRow()
+            currentRow.insertCell().appendChild(this.document.createTextNode(a+'-'+b+'-'+c))
+            let color = powerToColor([a,b,c])
+            currentRow.insertCell().style.backgroundColor = `rgb(${color.r}, ${color.g}, ${color.b})`
+          }
+        }
+      }
+    }
+
+    container.appendChild(colorMeaningsTable)
+    this.parent.appendChild(container)
   }
 }
