@@ -325,11 +325,21 @@ class GUI {
   }
 
   initialize(sim) {
-    const buttons = this.document.createElement('div')
-    buttons.appendChild(this.newButton('Reset', ()=>{ sim.reset() }))
-    buttons.appendChild(this.newStartStopButton(sim))
-    buttons.appendChild(this.newButton('Step', ()=>{ sim.step() }))
-    this.parent.appendChild(buttons)
+    this.addRunningControls(sim)
+    this.addResetControls(sim)
+  }
+
+  addRunningControls(sim) {
+    const container = this.document.createElement('div')
+    container.appendChild(this.newStartStopButton(sim))
+    container.appendChild(this.newButton('Step', ()=>{ sim.step() }))
+    this.parent.appendChild(container)
+  }
+
+  addResetControls(sim) {
+    const container = this.document.createElement('div')
+    container.appendChild(this.newButton('Reset', ()=>{ sim.reset() }))
+    this.parent.appendChild(container)
   }
 
   newStartStopButton(sim) {
