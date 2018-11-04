@@ -46,11 +46,20 @@ function fillImageDataObjWithGrid(grid, imageDataObj) {
           y: Math.floor(y * vScale),
         }
       )
-      imageDataObj.data[offset+0] = Math.floor(cell.power[0] * 255 / 9)
-      imageDataObj.data[offset+1] = Math.floor(cell.power[1] * 255 / 9)
-      imageDataObj.data[offset+2] = Math.floor(cell.power[2] * 255 / 9)
+      let color = powerToColor(cell.power)
+      imageDataObj.data[offset+0] = color.r
+      imageDataObj.data[offset+1] = color.g
+      imageDataObj.data[offset+2] = color.b
       imageDataObj.data[offset+3] = 255
     }
+  }
+}
+
+function powerToColor(power) {
+  return {
+    r: Math.floor(power[0] * 255 / 9),
+    g: Math.floor(power[1] * 255 / 9),
+    b: Math.floor(power[2] * 255 / 9),
   }
 }
 
