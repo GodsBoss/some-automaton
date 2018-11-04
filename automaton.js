@@ -19,25 +19,16 @@ function init(e) {
       },
     },
   )
-  sim.initialize()
-  const gui = new GUI(e.target, e.target.getElementById('settings'))
-  gui.initialize(sim)
-  tick(
-    function() {
-      sim.next()
-      fillImageDataObjWithGrid(sim.getGrid(), imageDataObj)
+  sim.setNextCallback(
+    (grid) => {
+      fillImageDataObjWithGrid(grid, imageDataObj)
       ctx2D.putImageData(imageDataObj, 0, 0)
     },
-    25
   )
-}
-
-function tick(f, interval) {
-  var g = function() {
-    setTimeout(g, interval)
-    f()
-  }
-  g()
+  sim.initialize()
+  sim.start()
+  const gui = new GUI(e.target, e.target.getElementById('settings'))
+  gui.initialize(sim)
 }
 
 function fillImageDataObjWithGrid(grid, imageDataObj) {
@@ -258,6 +249,8 @@ function randomPosition(grid) {
 class Simulation {
   constructor(cfg) {
     this.cfg = cfg
+    this.running = false
+    this.nextCallback = (grid) => {}
   }
 
   initialize() {
@@ -275,8 +268,34 @@ class Simulation {
   }
 
   next() {
+    if(!this.running) {
+      return
+    }
+    setTimeout(
+      () => {
+        this.next()
+      },
+      25
+    )
     this.mutation.mutate(this.grid)
     this.fight.fight(this.grid)
+    this.nextCallback(this.getGrid())
+  }
+
+  setNextCallback(callback) {
+    this.nextCallback = callback
+  }
+
+  start() {
+    if(this.running) {
+      return
+    }
+    this.running = true
+    this.next()
+  }
+
+  stop() {
+    this.running = false
   }
 }
 
@@ -289,6 +308,8 @@ class GUI {
   initialize(sim) {
     const buttons = this.document.createElement('div')
     buttons.appendChild(this.newButton('Reset', ()=>{ sim.reset() }))
+    buttons.appendChild(this.newButton('Start', ()=>{ sim.start() }))
+    buttons.appendChild(this.newButton('Stop', ()=>{ sim.stop() }))
     this.parent.appendChild(buttons)
   }
 
