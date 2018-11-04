@@ -278,6 +278,10 @@ class Simulation {
       },
       25
     )
+    this.step()
+  }
+
+  step() {
     this.mutation.mutate(this.grid)
     this.fight.fight(this.grid)
     this.gridChangeCallback(this.getGrid())
