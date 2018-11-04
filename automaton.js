@@ -19,7 +19,7 @@ function init(e) {
       },
     },
   )
-  sim.setNextCallback(
+  sim.setGridChangeCallback(
     (grid) => {
       fillImageDataObjWithGrid(grid, imageDataObj)
       ctx2D.putImageData(imageDataObj, 0, 0)
@@ -250,7 +250,7 @@ class Simulation {
   constructor(cfg) {
     this.cfg = cfg
     this.running = false
-    this.nextCallback = (grid) => {}
+    this.gridChangeCallback = (grid) => {}
   }
 
   initialize() {
@@ -265,6 +265,7 @@ class Simulation {
 
   reset() {
     this.grid = new Grid(this.cfg.size, createRandomCell(this.cfg.variance))
+    this.gridChangeCallback(this.getGrid())
   }
 
   next() {
@@ -279,11 +280,11 @@ class Simulation {
     )
     this.mutation.mutate(this.grid)
     this.fight.fight(this.grid)
-    this.nextCallback(this.getGrid())
+    this.gridChangeCallback(this.getGrid())
   }
 
-  setNextCallback(callback) {
-    this.nextCallback = callback
+  setGridChangeCallback(callback) {
+    this.gridChangeCallback = callback
   }
 
   start() {
