@@ -7,7 +7,7 @@ function init(e) {
   canvas.style.border = "1px solid black"
   const ctx2D = canvas.getContext('2d')
   const imageDataObj = ctx2D.createImageData(canvas.width, canvas.height)
-  let grid = new Grid({width: 320, height: 160}, createRandomCell)
+  let grid = new Grid({width: 320, height: 160}, createRandomCell(4))
   let mutation = new Mutation(1)
   const fight = new Fight(10000)
   tick(
@@ -116,18 +116,22 @@ function createCell(x, y) {
   }
 }
 
-function createRandomCell(x, y) {
-  const power = [1, 1, 1]
-  let remaining = (5-1)*3
-  while(remaining>0) {
-    let index = randomInt(0, 3)
-    if(power[index] < 9) {
-      power[index]++
-      remaining--
+function createRandomCell(variance) {
+  const initialPowerValue = 5 - variance
+  const startRemaining = 15 - (3 * initialPowerValue)
+  return function(x, y) {
+    const power = [initialPowerValue, initialPowerValue, initialPowerValue]
+    let remaining = startRemaining
+    while(remaining>0) {
+      let index = randomInt(0, 3)
+      if(power[index] < 9) {
+        power[index]++
+        remaining--
+      }
     }
-  }
-  return {
-    power: power,
+    return {
+      power: power,
+    }
   }
 }
 
