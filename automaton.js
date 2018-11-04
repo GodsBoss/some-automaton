@@ -20,6 +20,8 @@ function init(e) {
     },
   )
   sim.initialize()
+  const gui = new GUI(e.target, e.target.getElementById('settings'))
+  gui.initialize(sim)
   tick(
     function() {
       sim.next()
@@ -268,8 +270,32 @@ class Simulation {
     return this.grid
   }
 
+  reset() {
+    this.grid = new Grid(this.cfg.size, createRandomCell(this.cfg.variance))
+  }
+
   next() {
     this.mutation.mutate(this.grid)
     this.fight.fight(this.grid)
+  }
+}
+
+class GUI {
+  constructor(document, parent) {
+    this.document = document
+    this.parent = parent
+  }
+
+  initialize(sim) {
+    const buttons = this.document.createElement('div')
+    buttons.appendChild(this.newButton('Reset', ()=>{ sim.reset() }))
+    this.parent.appendChild(buttons)
+  }
+
+  newButton(label, callback){
+    const button = this.document.createElement('button')
+    button.appendChild(this.document.createTextNode(label))
+    button.addEventListener('click', callback, false)
+    return button
   }
 }
