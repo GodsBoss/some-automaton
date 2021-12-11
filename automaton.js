@@ -358,7 +358,7 @@ class GUI {
       varianceItem.value = variance
       varianceList.appendChild(varianceItem)
     }
-    varianceList.childNodes[4].selected = true
+    varianceList.lastChild.selected = true
     container.appendChild(varianceList)
     container.appendChild(
       this.newButton(
