@@ -1,5 +1,7 @@
 window.addEventListener('load', init, false);
 
+const maxPowerValue = 9
+
 function init(e) {
   const canvas = e.target.getElementById('grid')
   canvas.width = 1600
@@ -57,9 +59,9 @@ function fillImageDataObjWithGrid(grid, imageDataObj) {
 
 function powerToColor(power) {
   return {
-    r: Math.floor(power[0] * 255 / 9),
-    g: Math.floor(power[1] * 255 / 9),
-    b: Math.floor(power[2] * 255 / 9),
+    r: Math.floor(power[0] * 255 / maxPowerValue),
+    g: Math.floor(power[1] * 255 / maxPowerValue),
+    b: Math.floor(power[2] * 255 / maxPowerValue),
   }
 }
 
@@ -135,7 +137,7 @@ function createRandomCell(variance) {
     let remaining = startRemaining
     while(remaining>0) {
       let index = randomInt(0, 3)
-      if(power[index] < 9) {
+      if(power[index] < maxPowerValue) {
         power[index]++
         remaining--
       }
@@ -193,7 +195,7 @@ class Mutation {
 
 function validPower(power) {
   for(let i=0; i<power.length; i++) {
-    if(power[i]<1 || power[i]>9) {
+    if(power[i]<1 || power[i]>maxPowerValue) {
       return false
     }
   }
