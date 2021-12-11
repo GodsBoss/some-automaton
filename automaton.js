@@ -1,6 +1,7 @@
 window.addEventListener('load', init, false);
 
 const maxPowerValue = 9
+const powerValue = 5
 
 function init(e) {
   const canvas = e.target.getElementById('grid')
@@ -124,14 +125,14 @@ const gridNeighbourOffsets = [
 function createCell(x, y) {
   return {
     power: [
-      5, 5, 5,
+      powerValue, powerValue, powerValue,
     ]
   }
 }
 
 function createRandomCell(variance) {
-  const initialPowerValue = 5 - variance
-  const startRemaining = 15 - (3 * initialPowerValue)
+  const initialPowerValue = powerValue - variance
+  const startRemaining = 3*(powerValue - initialPowerValue)
   return function(x, y) {
     const power = [initialPowerValue, initialPowerValue, initialPowerValue]
     let remaining = startRemaining
@@ -351,7 +352,7 @@ class GUI {
   addResetControls(sim) {
     const container = this.document.createElement('div')
     const varianceList = this.document.createElement('select')
-    for(let variance = 0; variance < 5; variance++) {
+    for(let variance = 0; variance < powerValue; variance++) {
       let varianceItem = this.document.createElement('option')
       varianceItem.appendChild(this.document.createTextNode(variance))
       varianceItem.value = variance
@@ -416,7 +417,7 @@ class GUI {
     for(let a = 1; a < 10; a++) {
       for(let b = 1; b < 10; b++) {
         for(let c = 1; c < 10; c++) {
-          if(a+b+c == 15) {
+          if(a+b+c == 3*powerValue) {
             let currentRow = colorMeaningsTable.insertRow()
             currentRow.insertCell().appendChild(this.document.createTextNode(a+'-'+b+'-'+c))
             let color = powerToColor([a,b,c])
