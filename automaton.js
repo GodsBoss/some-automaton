@@ -414,9 +414,9 @@ class GUI {
     headerRow.insertCell().appendChild(this.document.createTextNode('Color'))
 
     // ROFL!
-    for(let a = 1; a < 10; a++) {
-      for(let b = 1; b < 10; b++) {
-        for(let c = 1; c < 10; c++) {
+    for(let a = 1; a <= maxPowerValue; a++) {
+      for(let b = 1; b <= maxPowerValue; b++) {
+        for(let c = 1; c <= maxPowerValue; c++) {
           if(a+b+c == 3*powerValue) {
             let currentRow = colorMeaningsTable.insertRow()
             currentRow.insertCell().appendChild(this.document.createTextNode(a+'-'+b+'-'+c))
